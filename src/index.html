@@ -84,6 +84,9 @@
             padding: 20px;
             margin: 10px 30px;
             max-width: 80%;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
             display: none;
         }
 
@@ -201,7 +204,7 @@
     <script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js"></script> <!-- Actual src here: https://github.com/xiazeyu/live2d-widget.js -->
     <div class="app-container" id="appContainer">
         <div class="title-bar">
-            <span>Desktop Assistant</span>
+            <span>L2D Assistant</span>
             <div>
                 <span class="window-button" id="debug"><></span>
                 <span class="window-button" id="minimize">–</span>
@@ -595,7 +598,7 @@
          @param {string} type - Which bubble to use ("question" or "answer")
          */
         function typeMessage(value, inputMessage, type = "answer") {
-            const message = marked.parse(inputMessage); // inject markdown here
+            const message = inputMessage;//marked.parse(inputMessage); // inject markdown here
             console.log(message);
             let speechBubble = answer;
 
@@ -630,7 +633,7 @@
                         const currentChar = message.charAt(index);
                         // Append the current character to the speech bubble.
                         outputHTML += currentChar;
-                        speechBubble.innerHTML = outputHTML; // This is not secure at all :x
+                        speechBubble.textContent = outputHTML; // This is not secure at all :x
                         speechContainer.scrollTop = speechContainer.scrollHeight;
 
                         index++;

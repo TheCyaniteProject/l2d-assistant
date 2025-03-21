@@ -4,7 +4,6 @@ const fs = require("fs");
 const os = require("os");
 const OpenAI = require("openai");
 const { stringify } = require('node:querystring');
-const cheerio = require('cheerio');
 const jsdom = require('jsdom');
 
 /*
