@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <title>Desktop Assistant</title>
+    <style>
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: none;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .app-container {
+            position: relative;
+            height: 100%;
+            width: 100%;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .window-border,
+        .title-bar {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .hovered .window-border,
+        .hovered .title-bar {
+            opacity: 1;
+        }
+
+        .window-border {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-sizing: border-box;
+            border: 1px solid rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .title-bar {
+            font-family: "Roboto", sans-serif;
+            -webkit-app-region: drag;
+            height: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            line-height: 30px;
+            padding: 0 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .window-button {
+            font-family: "Roboto", sans-serif;
+            -webkit-app-region: no-drag;
+            cursor: pointer;
+            padding: 5px;
+            color: white;
+        }
+
+        .content {
+            padding: 10px;
+        }
+
+        .speech {
+            font-family: "Roboto", sans-serif;
+            color: black;
+            background: white;
+            text-align: center;
+            border-radius: 20px;
+            padding: 20px;
+            margin: 10px 30px;
+            max-width: 80%;
+            display: none;
+        }
+
+        #speechContainer {
+            position: absolute;
+            right: 0;
+            bottom: 30%;
+            max-height: 70%; /* Set the maximum height so that when content exceeds this height, a scroll bar appears / overflow-y: auto; / Enable vertical scrolling */
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .settings {
+            font-family: "Roboto", sans-serif;
+            background-color: white;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            padding: 6px 10px;
+            margin: 10px 10px;
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        .settings-button {
+            font-family: "Roboto", sans-serif;
+            background-color: white;
+            padding: 6px 10px;
+            margin: 10px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .hovered .settings {
+            opacity: 1;
+        }
+
+        .settings-menu {
+            background-color: lightgray;
+            position: absolute;
+            left: 0;
+            top: 0;
+            padding: 40px 0px;
+            height: 100%;
+            width: 100%;
+            display: none;
+        }
+
+
+        .settings2 {
+            font-family: "Roboto", sans-serif;
+            background-color: white;
+            position: absolute;
+            left: 0;
+            bottom: 9%;
+            padding: 6px 10px;
+            margin: 10px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        /* Container holding the dropdown */
+        .dropdown {
+            font-family: "Roboto", sans-serif;
+            background-color: white;
+            padding: 6px 10px;
+            margin: 10px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* Style for the dropdown button */
+        .dropbtn {
+            background-color: white;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* The dropdown menu (hidden by default) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 90%;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        /* Style the links inside the dropdown */
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        /* Change color on hover for dropdown links */
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Show the dropdown menu when hovering over the container */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+    </style>
+</head>
+<body id="main">
+    <script src="https://cdn.jsdelivr.net/npm/live2d-widget@3.1.4/lib/L2Dwidget.min.js"></script> <!-- Actual src here: https://github.com/xiazeyu/live2d-widget.js -->
+    <div class="app-container" id="appContainer">
+        <div class="title-bar">
+            <span>Desktop Assistant</span>
+            <div>
+                <span class="window-button" id="debug"><></span>
+                <span class="window-button" id="minimize">–</span>
+                <span class="window-button" id="close">×</span>
+            </div>
+            <script>
+                document.getElementById("debug").addEventListener("click", () => {
+                    window.api.openDevTools();
+                });
+                document.getElementById("minimize").addEventListener("click", () => {
+                    window.api.minimize();
+                });
+                document.getElementById("close").addEventListener("click", () => {
+                    window.api.close();
+                });
+            </script>
+        </div>
+
+        <div class="content">
+            <div id="speechContainer">
+                <div class="speech" id="question"></div>
+                <div class="speech" id="answer"></div>
+            </div>
+            <div class="settings" id="settings">Settings</div>
+            <div class="settings-menu" id="settings-menu">
+                <div class="settings-button">
+                    <label>OpenAI APIKey (Required)</label><br> <input type="password" id="api-key">
+                </div>
+                <div class="settings-button">
+                    <label>Live2D model.json URL (May require restart)</label><br> <input type="text" id="model-json">
+                    <div class="settings-button" id="apply-model-button">Apply</div>
+                </div>
+                <style>
+                    input {
+                        width: 95%;
+                        font-family: "Roboto", sans-serif;
+                        margin: 5px;
+                    }
+
+                    #apply-model-button {
+                        background-color: lightgray;
+                        margin: 5px;
+                    }
+                </style>
+                <div class="settings-button" id="tts-toggle">TTS Enabled: True</div>
+                <div class="dropdown">
+                    <button class="dropbtn" id="tts-voice">TTS Voice: Alloy</button>
+                    <!-- TODO add links to voice previews, or include custom previews -->
+                    <div class="dropdown-content">
+                        <a id="tts-1">Alloy</a>
+                        <a id="tts-2">Ash</a>
+                        <a id="tts-3">Coral</a>
+                        <a id="tts-4">Echo</a>
+                        <a id="tts-5">Fable</a>
+                        <a id="tts-6">Onyx</a>
+                        <a id="tts-7">Nova</a>
+                        <a id="tts-8">Sage</a>
+                        <a id="tts-9">Shimmer</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="dropbtn" id="llm-model">LLM Model: gpt-4o-mini</button>
+                    <!-- These have to be added manually since fetching the models from the API also includes all the non-chat models like dall-e and tts with no way to sort them as far as I can tell -->
+                    <!-- Instead, I'll make a master file later so you can edit the available models -->
+                    <div class="dropdown-content">
+                        <a id="model-1">o3-mini</a>
+                        <a id="model-2">gpt-4o-mini</a>
+                        <a id="model-3">gpt-4o</a>
+                        <a id="model-4">gpt-4-turbo</a>
+                    </div>
+                </div>
+                <div class="settings-button" id="background-toggle">Hide Background: True</div>
+                <!-- <div class="settings-button">microphone activation threshold placeholder :)</div> -->
+                <div class="settings-button"> <label>Agent Activation Word</label><br> <input type="text" id="assistant-name"> </div>
+                <div class="settings-button"><label>LLM Instructions</label><br> <textarea id="instructions" rows="5" cols="46"></textarea></div>
+                <style>
+                    #instructions {
+                        width: 95%;
+                        resize: vertical;
+                        font-family: "Roboto", sans-serif;
+                    }
+                </style>
+                <div class="settings2" id="close-settings">Close</div>
+            </div>
+            <script>
+
+                //// Settings ////
+
+                // background toggle
+                const backgroundToggleKey = 'background-toggle';
+
+                let backgroundVal = localStorage.getItem(backgroundToggleKey);
+                if (backgroundVal === null) {
+                    backgroundVal = "true";
+                }
+
+                const backgroundToggleText = document.getElementById(backgroundToggleKey);
+                const body = document.getElementById("main");
+
+                function updateBackground() {
+                    backgroundToggleText.textContent = "Hide Background: " + backgroundVal;
+                    body.style.backgroundColor = (backgroundVal === "false") ? "black" : "";
+                    localStorage.setItem(backgroundToggleKey, backgroundVal);
+                }
+
+                backgroundToggleText.addEventListener("click", () => {
+                    backgroundVal = (backgroundVal === "true") ? "false" : "true";
+                    updateBackground();
+                });
+                updateBackground();
+
+                // TTS toggle
+                const ttsToggleKey = 'tts-toggle';
+
+                let ttsVal = localStorage.getItem(ttsToggleKey);
+                if (ttsVal === null) {
+                    ttsVal = "true";
+                }
+
+                const ttsToggleText = document.getElementById(ttsToggleKey);
+
+                function updateTts(toggle) {
+                    localStorage.setItem(ttsToggleKey, toggle);
+                    ttsToggleText.textContent = "TTS Enabled: " + toggle;
+                    window.api.sendTtsToggle(JSON.parse(toggle));
+                }
+
+                ttsToggleText.addEventListener("click", () => {
+                    ttsVal = (ttsVal === "true") ? "false" : "true";
+                    updateTts(ttsVal);
+                });
+                updateTts(ttsVal);
+
+                // TTS voice
+                const ttsVoiceKey = "tts-voice";
+                const numOfVoices = 9;
+
+                let _voice = localStorage.getItem(ttsVoiceKey);
+                if (_voice === null) {
+                    _voice = "alloy";
+                }
+
+                function setTtsVoice(voice) {
+                    const ttsDropdownText = document.getElementById(ttsVoiceKey);
+                    ttsDropdownText.textContent = "TTS Voice: " + voice;
+                    localStorage.setItem(ttsVoiceKey, voice);
+                    window.api.sendTtsVoice(voice);
+                }
+
+                for (let i = 1; i <= numOfVoices; i++) {
+                    const ttsOption = document.getElementById(`tts-${i}`);
+                    ttsOption.addEventListener("click", () => {
+                        setTtsVoice(ttsOption.textContent.toLowerCase());
+                    });
+                }
+                setTtsVoice(_voice);
+
+                // LLM Model
+                const llmModelKey = "llm-model";
+                const numOfModels = 4;
+
+                let _model = localStorage.getItem(llmModelKey);
+                if (_model === null) {
+                    _model = "gpt-4o-mini";
+                }
+
+                function setLlmModel(model) {
+                    const llmDropdownText = document.getElementById(llmModelKey);
+                    llmDropdownText.textContent = "LLM Model: " + model;
+                    localStorage.setItem(llmModelKey, model);
+                    window.api.sendLlmModel(model);
+                }
+
+                for (let i = 1; i <= numOfModels; i++) {
+                    const llmOption = document.getElementById(`model-${i}`);
+                    llmOption.addEventListener("click", () => {
+                        setLlmModel(llmOption.textContent.toLowerCase());
+                    });
+                }
+                setLlmModel(_model);
+
+                // LLM APIKey
+                const openaiApiKey = 'api-key';
+                const apiKeyEntry = document.getElementById(openaiApiKey);
+                let apiKey = localStorage.getItem(openaiApiKey);
+                if (apiKey === null) {
+                    // Do nothing?
+                    //apiKey = "none";
+                }
+                else {
+                    apiKeyEntry.value = apiKey;
+                    updateApiKey(apiKey);
+                }
+
+                function updateApiKey(key) {
+                    // Send key to main.js
+                    window.api.sendApiKey(key);
+                    //console.log(key);
+                }
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    apiKeyEntry.addEventListener("input", function (event) {
+                        apiKey = apiKeyEntry.value;
+                        localStorage.setItem(openaiApiKey, apiKey);
+                        updateApiKey(apiKey);
+                    });
+                });
+
+                // Assistant Name
+                const nameKey = 'assistant-name';
+                const nameEntry = document.getElementById(nameKey);
+                let name = localStorage.getItem(nameKey);
+                if (name === null) {
+                    name = "Assistant";
+                }
+
+                function updateName(text) {
+                    name = text;
+                    nameEntry.value = name;
+                    localStorage.setItem(nameKey, name);
+                    window.api.sendHotword(text);
+                }
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    nameEntry.addEventListener("input", function (event) {
+                        updateName(event.target.value);
+                    });
+                });
+                updateName(name);
+
+                // LLM Instructions
+                const instructionsKey = 'instructions';
+                const instructionsEntry = document.getElementById(instructionsKey);
+                let instructions = localStorage.getItem(instructionsKey);
+                if (instructions === null) {
+                    instructions = "You are a helpful assistant. Give simple to-the-point answers only.";
+                }
+
+                function updateInstructions(text) {
+                    instructions = text;
+                    instructionsEntry.value = instructions;
+                    localStorage.setItem(instructionsKey, instructions);
+                    window.api.sendInstructions(text);
+                }
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    instructionsEntry.addEventListener("input", function (event) {
+                        updateInstructions(event.target.value);
+                    });
+                });
+                updateInstructions(instructions);
+
+                // Live2D Model
+                const modelJsonKey = 'model-json';
+                const modelJsonEntry = document.getElementById(modelJsonKey);
+                let liveModel = localStorage.getItem(modelJsonKey);
+                if (liveModel === null) {
+                    liveModel = "https://cdn.jsdelivr.net/gh/evrstr/live2d-widget-models/live2d_evrstr/whitecat/model.json";
+                    localStorage.setItem(modelJsonKey, liveModel);
+                }
+                else {
+                    modelJsonEntry.value = liveModel;
+                }
+
+                function changeLiveModel(modelJson) { // L2DW doesn't have a function for hot-swopping models, GPT helped me figure this one out
+                    const widgetDiv = document.getElementById('live2d-widget');
+                    if (widgetDiv) {
+                        widgetDiv.parentNode.removeChild(widgetDiv);
+
+                        L2Dwidget.config.model.jsonPath = modelJson;
+
+                        L2Dwidget.init();
+                    }
+                    else {
+                        L2Dwidget.init({
+                            model: {
+                                /*
+                                  More models at:
+                                  https://github.com/evrstr/live2d-widget-models?tab=readme-ov-file
+                                  https://unpkg.com/browse/live2d-widget-model@1.0.0/model/ (copy the raw link to the <modelname>.json)
+                        
+                                  Actual src here along with instructions here for custom models (haven't tried yet):
+                                  https://github.com/xiazeyu/live2d-widget.js
+                        
+                                  Models will be temporarily invisible until they cache the first time you use them. After that they load instantly.
+                                */
+                                jsonPath: liveModel, // "https://cdn.jsdelivr.net/gh/evrstr/live2d-widget-models/live2d_evrstr/whitecat/model.json"
+                            },
+                            display: {
+                                position: "right",
+                                width: 200,
+                                height: 300,
+                            },
+                        });
+                    }
+                }
+
+                const applyModel = document.getElementById("apply-model-button");
+                applyModel.addEventListener("click", () => {
+                    liveModel = modelJsonEntry.value;
+                    localStorage.setItem(modelJsonKey, liveModel);
+                    changeLiveModel(liveModel);
+                });
+                changeLiveModel(liveModel);
+
+                //// ----- ////
+
+
+                const menu = document.getElementById("settings-menu");
+                document.getElementById("settings").addEventListener("click", () => {
+                    menu.style.display = "block";
+                });
+                document.getElementById("close-settings").addEventListener("click", () => {
+                    menu.style.display = "none";
+                });
+            </script>
+            <script>
+
+                /*
+                  Pasting this here from https://github.com/xiazeyu/live2d-widget.js/blob/master/src/config/defaultConfig.js as a reference
+                  (Not sure what most of this does)
+                */
+
+                /*
+                const defaultConfig = {
+                  model: {
+                    jsonPath: 'https://unpkg.com/live2d-widget-model-shizuku@latest/assets/shizuku.model.json',
+                    scale: 1,
+                  },
+                  display: {
+                    superSample: 2,
+                    width: 200,
+                    height: 400,
+                    position: 'right',
+                    hOffset: 0,
+                    vOffset: -20,
+                  },
+                  mobile: {
+                    show: true,
+                    scale: 0.8,
+                    motion: true,
+                  },
+                  name: {
+                    canvas: 'live2dcanvas',
+                    div: 'live2d-widget',
+                  },
+                  react: {
+                    opacity: 1,
+                  },
+                  dev: {
+                    border: false
+                  },
+                  dialog: {
+                    enable: false,
+                    script: null
+                  }
+                }
+                */
+            </script>
+        </div>
+
+        <div class="window-border"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> <!-- yay markdown! -->
+    <script>
+
+        const appContainer = document.getElementById("appContainer");
+        let hoverTimeout;
+
+
+        document.addEventListener("mousemove", () => {
+            appContainer.classList.add("hovered");
+
+            clearTimeout(hoverTimeout);
+
+            hoverTimeout = setTimeout(() => {
+                appContainer.classList.remove("hovered");
+            }, 2000);
+        });
+
+        const question = document.getElementById("question");
+        const answer = document.getElementById("answer");
+        let typingTimeout;
+        let hideTimeout;
+
+        /**
+         Function to "type out" a message into the speech bubble.
+
+         @param {boolean} value - If we should skip typing or not. false = print immediatly 
+         @param {string} message - The message content to be displayed.
+         @param {string} type - Which bubble to use ("question" or "answer")
+         */
+        function typeMessage(value, inputMessage, type = "answer") {
+            const message = marked.parse(inputMessage); // inject markdown here
+            console.log(message);
+            let speechBubble = answer;
+
+            if (type == "question") {
+                question.style.display = "block";
+                speechBubble = question;
+            } else {
+                answer.style.display = "block";
+            }
+
+            clearTimeout(typingTimeout);
+            clearTimeout(hideTimeout);
+
+            speechBubble.textContent = "";
+            let index = 0;
+
+            // Set the base typing speed in milliseconds.
+            const typingSpeed = 50;
+
+            // Additional delay for punctuations for a more natural typing effect.
+            const punctuationExtraDelay = 500;
+
+            const speechContainer = document.getElementById("speechContainer");
+
+            if (value == false) {
+
+                let outputHTML = "";
+                function typeNext() {
+
+                    if (index < message.length) {
+
+                        const currentChar = message.charAt(index);
+                        // Append the current character to the speech bubble.
+                        outputHTML += currentChar;
+                        speechBubble.innerHTML = outputHTML; // This is not secure at all :x
+                        speechContainer.scrollTop = speechContainer.scrollHeight;
+
+                        index++;
+
+                        let delay = typingSpeed;
+
+                        // Increase the delay if the character is a punctuation that should have a pause.
+                        // Probably not needed now that we use Markdown
+                        if (["?", "!", "."].includes(currentChar)) {
+                            delay += punctuationExtraDelay;
+                        }
+
+                        typingTimeout = setTimeout(typeNext, delay);
+                    } else {
+                        hideTimeout = setTimeout(() => {
+                            question.style.display = "none";
+                            answer.style.display = "none";
+                        }, 200000);
+                    }
+                }
+                typeNext();
+            } else {
+                speechBubble.innerHTML = message;
+            }
+        }
+
+
+        if (
+            window.api &&
+            typeof window.api.receiveSpeechMessage === "function"
+        ) {
+            window.api.receiveSpeechMessage((value, message, type) => {
+                typeMessage(value, message, type);
+            });
+        }
+
+    </script>
+</body>
+</html> 
