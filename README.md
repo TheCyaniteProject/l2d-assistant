@@ -6,7 +6,7 @@ L2D Assistant is a Live2D virtual assistant that lives on your desktop. Powered 
 
 Note: This application has only been tested on Windows. It may not work on Linux or macOS.
 
-![image](https://github.com/user-attachments/assets/d31db2e4-a988-4bf0-8234-997b01576319)
+![image](https://github.com/user-attachments/assets/dd14c627-4c73-4bf5-8dc8-742b5ba1d5a9)
 
 Window fades-in on mouse hover:
 
