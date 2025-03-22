@@ -93,6 +93,7 @@
             bottom: 30%;
             max-height: 70%; /* Set the maximum height so that when content exceeds this height, a scroll bar appears / overflow-y: auto; / Enable vertical scrolling */
             overflow-y: auto;
+            width: 100%;
             max-width: 100%;
             display: flex;
             flex-direction: column;
@@ -241,6 +242,16 @@
                 <div class="speech" id="question"></div>
                 <div class="speech" id="answer"></div>
             </div>
+            <style>
+                #question {
+                    border-top-left-radius: 0px;
+                    margin-right: auto;
+                }
+
+                #answer {
+                    border-top-right-radius: 0px;
+                }
+            </style>
             <div class="settings" id="settings">Settings</div>
             <div class="settings-menu" id="settings-menu">
                 <div class="settings-button">
