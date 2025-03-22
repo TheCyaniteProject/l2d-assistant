@@ -6,15 +6,18 @@ L2D Assistant is a Live2D virtual assistant that lives on your desktop. Powered 
 
 Note: This application has only been tested on Windows. It may not work on Linux or macOS.
 
-![image](https://github.com/user-attachments/assets/dd14c627-4c73-4bf5-8dc8-742b5ba1d5a9)
+![image](https://github.com/user-attachments/assets/16750b6d-e329-4d0f-b75c-804591fe893d)
+
 
 Window fades-in on mouse hover:
 
-![Screenshot](https://media.discordapp.net/attachments/1110381898653503558/1352353426364698635/image.png?ex=67de5d86&is=67dd0c06&hm=e8b9ba823c2f895e4ddd306fe205ca9194a5045b6fe6d2375678704b48e37391&=&format=webp)
+![image](https://github.com/user-attachments/assets/dc3e90c5-3e7e-4bd4-a868-6c3d43b31b1f)
+
 
 Settings menu:
 
-![Screenshot](https://media.discordapp.net/attachments/1110381898653503558/1352353425966501989/image.png?ex=67de5d86&is=67dd0c06&hm=91ebc5d6ac276355955b4c820a265c7a2c425ad1d02366136fe9e94d9faf640f&=&format=webp)
+![image](https://github.com/user-attachments/assets/b8886bf3-266a-441c-ba9c-aa6666ab8a07)
+
 
 ## Features
 
