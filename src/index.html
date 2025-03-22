@@ -84,9 +84,6 @@
             padding: 20px;
             margin: 10px 30px;
             max-width: 80%;
-            white-space: normal;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
             display: none;
         }
 
@@ -96,6 +93,7 @@
             bottom: 30%;
             max-height: 70%; /* Set the maximum height so that when content exceeds this height, a scroll bar appears / overflow-y: auto; / Enable vertical scrolling */
             overflow-y: auto;
+            max-width: 100%;
             display: flex;
             flex-direction: column;
             align-items: flex-end;
@@ -197,6 +195,18 @@
         /* Show the dropdown menu when hovering over the container */
         .dropdown:hover .dropdown-content {
             display: block;
+        }
+
+        pre {
+            background-color: lightgray;
+            border-radius: 4px;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+
+        code {
+            max-width: 80%;
+            overflow-x: hidden;
         }
     </style>
 </head>
@@ -569,6 +579,7 @@
         <div class="window-border"></div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> <!-- yay markdown! -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script> <!-- yay sanitazation! -->
     <script>
 
         const appContainer = document.getElementById("appContainer");
@@ -598,7 +609,8 @@
          @param {string} type - Which bubble to use ("question" or "answer")
          */
         function typeMessage(value, inputMessage, type = "answer") {
-            const message = inputMessage;//marked.parse(inputMessage); // inject markdown here
+            const message = DOMPurify.sanitize(marked.parse(inputMessage), { USE_PROFILES: { html: true } }); // inject markdown here
+            console.log(message);
             console.log(message);
             let speechBubble = answer;
 
@@ -633,7 +645,7 @@
                         const currentChar = message.charAt(index);
                         // Append the current character to the speech bubble.
                         outputHTML += currentChar;
-                        speechBubble.textContent = outputHTML; // This is not secure at all :x
+                        speechBubble.innerHTML = outputHTML; // Should be secure now?
                         speechContainer.scrollTop = speechContainer.scrollHeight;
 
                         index++;
