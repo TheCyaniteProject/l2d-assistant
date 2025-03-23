@@ -160,7 +160,7 @@ async function speechToText(window, audioFilePath) {
             let message = transcription.text.toString();
 
             const hotwordRegex = new RegExp(`\\b${ACTIVATION_HOTWORD}[,\\.]?\\s*`, "i");
-            message = message.replace(hotwordRegex, "");
+            message = message.split(hotwordRegex)[1];
 
             message = message.charAt(0).toUpperCase() + message.slice(1);
 
