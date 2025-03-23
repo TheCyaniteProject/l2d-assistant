@@ -26,23 +26,25 @@ Settings menu:
 - Function calling system allows L2D Assistant to:
   - Get live weather information
   - Search the internet
+  - More coming in the future!
 - Settings menu to customize you model, activation hotword, AI instructions and manage your OpenAI API key
-- Future-proof design for adding more functions over time
 
 ## Requirements
 
 - [Node.js](https://nodejs.org/en/) (version 14 or higher)
 - [npm](https://www.npmjs.com/) (usually included with Node.js)
 - A Windows operating system (optimal experience; not tested on macOS or Linux)
-- A free OpenAI developer account (to get an API key at [OpenAI Platform](https://platform.openai.com/))
+- A free OpenAI developer account (get an API key at [OpenAI Platform](https://platform.openai.com/))
+- (Optional) It is recomended to use [Nvidia Broadcast](https://www.nvidia.com/en-us/geforce/broadcasting/broadcast-app/) or a similar software for background noise removal.
 
 ## Installation
 
 1. Clone or download this repository to your local machine.
-2. Navigate into the project folder using your terminal.
+2. Navigate to `/src/` in the project folder using your terminal or type `cmd` in the path bar in File Explorer while in `/src/`.
 3. Install dependencies:
    ```
    npm install
+   npm update
    ```
 4. Start the application:
    ```
@@ -50,7 +52,7 @@ Settings menu:
    ```
 5. Upon first launch, enter your OpenAI API key into the settings menu. You can obtain a key by signing up for a free developer account at [https://platform.openai.com/](https://platform.openai.com/).
 
-   Please note that using your API key costs money. Using default settings my bill over the course of a week was only $0.12. It is recomended to use [Nvidia Broadcast](https://www.nvidia.com/en-us/geforce/broadcasting/broadcast-app/) or a similer noise canceling app to prevent sending empty background noise to the API, as this will not only increase your bill but also make STT more unrelyable. You can also play with the `VOLUME_THRESHOLD` in `preload.js` until I add a slider to the settings menu.
+   Please note that using your API key costs money. Using default settings my bill over the course of a week was only $0.12. It is recomended to use [Nvidia Broadcast](https://www.nvidia.com/en-us/geforce/broadcasting/broadcast-app/) or a similer noise canceling software to prevent sending empty background noise to the API, as this will not only increase your bill but also make STT more unrelyable. You can also play with the `VOLUME_THRESHOLD` in `preload.js` until I add a slider to the settings menu.
 
 ## Usage
 
@@ -63,7 +65,6 @@ Settings menu:
 
 ## Roadmap
 
-- Continuous improvements on the Live2D character animations and models.
 - Additional AI function integrations (e.g., media constrols, reminders/alarms, and community requested features).
 - Support for macOS and Linux (feedback needed).
 
