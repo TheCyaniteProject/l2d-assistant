@@ -157,13 +157,14 @@ async function speechToText(window, audioFilePath) {
         console.log("Transcription:", transcription.text);
 
         if (transcription.text.toLowerCase().includes(ACTIVATION_HOTWORD.toLowerCase())) {
-            let message = transcription.text.toString().toLowerCase();
-            if (message.includes(ACTIVATION_HOTWORD.toLowerCase() + ","))
-                message = message.split(ACTIVATION_HOTWORD.toLowerCase() + ",")[1].trim()
-            else if (message.includes(ACTIVATION_HOTWORD.toLowerCase()))
-                message = message.split(ACTIVATION_HOTWORD.toLowerCase())[1].trim()
+            let message = transcription.text.toString();
+
+            const hotwordRegex = new RegExp(`\\b${ACTIVATION_HOTWORD}[,\\.]?\\s*`, "i");
+            message = message.replace(hotwordRegex, "");
 
             message = message.charAt(0).toUpperCase() + message.slice(1);
+
+            console.log(message);
 
             mainWindow.webContents.send('speech-message', true, message, "question");
             promptAssistant(message.trim());
