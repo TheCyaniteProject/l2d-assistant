@@ -21,6 +21,7 @@ const VOICE_MODEL_MODEL = "tts-1"; // TODO honestly should I even make this cust
 let VOICE_MODEL_VOICE = "alloy";
 let VOICE_MODEL_ENABLED = true;
 let ACTIVATION_HOTWORD = "Assistant";
+let PIN_TOP = false;
 
 const ASSISTANT_TOOLS = [
     {
@@ -320,8 +321,11 @@ const createWindow = () => {
         console.log("Received LLM Instructions: ", key);
         INSTRUCTIONS = key;
     });
-
-    //mainWindow.webContents.openDevTools(); // TODO: Add a UI button, since I somehow broke F12. How? No idea :)
+    ipcMain.on('pintop', (event, key) => {
+        console.log("Received mainWindow alwaysOnTop: ", key);
+        PIN_TOP = key;
+        mainWindow.setAlwaysOnTop(key);
+    });
 }
 
 app.whenReady().then(() => {

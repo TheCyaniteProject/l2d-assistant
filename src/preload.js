@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld('api', {
     sendLlmModel: (model) => ipcRenderer.send('llmmodel', model),
     sendHotword: (phrase) => ipcRenderer.send('hotword', phrase),
     sendInstructions: (instructions) => ipcRenderer.send('instructions', instructions),
+    sendPinTop: (isOnTop) => ipcRenderer.send('pintop', isOnTop),
 
     receiveSpeechMessage: (callback) => {
         ipcRenderer.on('speech-message', (event, value, message, type) => {

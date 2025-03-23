@@ -300,6 +300,7 @@
                         <a id="model-4">gpt-4-turbo</a>
                     </div>
                 </div>
+                <div class="settings-button" id="ontop-toggle">Always On Top: False</div>
                 <div class="settings-button" id="background-toggle">Hide Background: True</div>
                 <!-- <div class="settings-button">microphone activation threshold placeholder :)</div> -->
                 <div class="settings-button"> <label>Agent Activation Word</label><br> <input type="text" id="assistant-name"> </div>
@@ -339,6 +340,28 @@
                     updateBackground();
                 });
                 updateBackground();
+
+                // ontop toggle
+                const ontopToggleKey = 'ontop-toggle';
+
+                let ontopVal = localStorage.getItem(ontopToggleKey);
+                if (ontopVal === null) {
+                    ontopVal = "false";
+                }
+
+                const ontopToggleText = document.getElementById(ontopToggleKey);
+
+                function updateOnTop() {
+                    ontopToggleText.textContent = "Always On Top: " + ontopVal;
+                    localStorage.setItem(ontopToggleKey, ontopVal);
+                    window.api.sendPinTop(JSON.parse(ontopVal));
+                }
+
+                ontopToggleText.addEventListener("click", () => {
+                    ontopVal = (ontopVal === "true") ? "false" : "true";
+                    updateOnTop();
+                });
+                updateOnTop();
 
                 // TTS toggle
                 const ttsToggleKey = 'tts-toggle';
