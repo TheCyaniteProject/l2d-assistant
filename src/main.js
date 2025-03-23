@@ -5,6 +5,7 @@ const os = require("os");
 const OpenAI = require("openai");
 const { stringify } = require('node:querystring');
 const jsdom = require('jsdom');
+const windowStateKeeper = require('electron-window-state');
 
 /*
  Initialize the OpenAI client – If you're reading this on GitHub and see an apiKey here then I seriously fucked up.
@@ -265,7 +266,11 @@ async function handleAssistantResponse(completion) {
 let mainWindow;
 
 const createWindow = () => {
+    let mainWindowState = windowStateKeeper();
+
     mainWindow = new BrowserWindow({
+        x: mainWindowState.x,
+        y: mainWindowState.y,
         width: 400,
         height: 800,
         resizable: false,
@@ -275,6 +280,8 @@ const createWindow = () => {
             preload: path.join(__dirname, 'preload.js')
         }
     });
+
+    mainWindowState.manage(mainWindow);
 
     mainWindow.loadFile('index.html');
 

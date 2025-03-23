@@ -44,7 +44,7 @@ ipcRenderer.on('play-audio', (event, bufferData) => {
     I'll just come back later and fix this when I implement my setting menu.
     Promise :)
     */
-    const VOLUME_THRESHOLD = 0.05;
+    const VOLUME_THRESHOLD = 0.03;
 
     // These probably need to be adjusted. Eh, I'll do it later.
     const SILENCE_TIME_REQUIRED = 2000; // Amount of silence in milliseconds required before we stop recording
