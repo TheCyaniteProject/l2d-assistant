@@ -158,8 +158,8 @@ async function speechToText(window, audioFilePath) {
 
         if (transcription.text.toLowerCase().includes(ACTIVATION_HOTWORD.toLowerCase())) {
             let message = transcription.text.toString().toLowerCase();
-            if (message.includes(ACTIVATION_HOTWORD.toLowerCase() +","))
-                message = message.split(ACTIVATION_HOTWORD.toLowerCase() +",")[1].trim()
+            if (message.includes(ACTIVATION_HOTWORD.toLowerCase() + ","))
+                message = message.split(ACTIVATION_HOTWORD.toLowerCase() + ",")[1].trim()
             else if (message.includes(ACTIVATION_HOTWORD.toLowerCase()))
                 message = message.split(ACTIVATION_HOTWORD.toLowerCase())[1].trim()
 
@@ -167,6 +167,9 @@ async function speechToText(window, audioFilePath) {
 
             mainWindow.webContents.send('speech-message', true, message, "question");
             promptAssistant(message.trim());
+        }
+        else {
+            mainWindow.webContents.send('speech-message', true, "", "answer");
         }
     } catch (error) {
         console.error("Error during speech-to-text:", error);

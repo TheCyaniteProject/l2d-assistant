@@ -648,14 +648,18 @@
         function typeMessage(value, inputMessage, type = "answer") {
             const message = DOMPurify.sanitize(marked.parse(inputMessage), { USE_PROFILES: { html: true } }); // inject markdown here
             console.log(message);
-            console.log(message);
             let speechBubble = answer;
 
             if (type == "question") {
                 question.style.display = "block";
                 speechBubble = question;
             } else {
-                answer.style.display = "block";
+                if (inputMessage.trim() === "") {
+                    answer.style.display = "none";
+                }
+                else {
+                    answer.style.display = "block";
+                }
             }
 
             clearTimeout(typingTimeout);
