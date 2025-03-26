@@ -89,7 +89,7 @@ async function get_weather(latitude, longitude) {
 // You should check him out! https://github.com/shyguy1412
 async function web_search(query) { 
 
-    mainWindow.webContents.send('speech-message', true, `Searching the web for ${query}...`);
+    mainWindow.webContents.send('speech-message', true, `Searching the web for ${query}...`, "answer");
     const headers = {
         'User-Agent':
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136.0",
