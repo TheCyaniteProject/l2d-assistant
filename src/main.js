@@ -6,6 +6,7 @@ const OpenAI = require("openai");
 const { stringify } = require('node:querystring');
 const jsdom = require('jsdom');
 const windowStateKeeper = require('electron-window-state');
+const mommy = require('node-mommy')
 
 /*
  Initialize the OpenAI client – If you're reading this on GitHub and see an apiKey here then I seriously fucked up.
