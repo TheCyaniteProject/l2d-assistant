@@ -252,7 +252,7 @@
                 });
             </script>
         </div>
-
+        <div id="toggle-mic" style="cursor: pointer; position:absolute; bottom:4%; right:2%; font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20; font-size: 40px; color:white;" class="material-symbols-outlined">mic</div>
         <div class="content">
             <div id="speechContainer">
                 <div class="speech" id="question"></div>
@@ -331,6 +331,24 @@
                 <div class="settings2" id="close-settings">Close</div>
             </div>
             <script>
+                // mute toggle //
+                let isMuted = false;
+                
+                const micToggle = document.getElementById('toggle-mic');
+
+                document.addEventListener("DOMContentLoaded", function () {
+                    isMuted = JSON.parse(localStorage.getItem("mictoggle") !== null? localStorage.getItem("mictoggle") : "false")
+                    console.log(localStorage.getItem("mictoggle"));
+                    micToggle.innerText = !isMuted? "mic" : "mic_off";
+                    window.api.sendIsMuted(isMuted);
+                    micToggle.addEventListener("click", function() {
+                        isMuted = !isMuted;
+                        localStorage.setItem("mictoggle", isMuted);
+                        console.log(localStorage.getItem("mictoggle"));
+                        micToggle.innerText = !isMuted? "mic" : "mic_off";
+                        window.api.sendIsMuted(isMuted);
+                    });
+                });
 
                 //// Settings ////
 

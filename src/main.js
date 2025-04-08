@@ -1,4 +1,4 @@
-﻿const { app, BrowserWindow, ipcMain, session, browser } = require('electron');
+﻿const { app, BrowserWindow, ipcMain, session } = require('electron');
 const path = require('node:path');
 const fs = require("fs");
 const os = require("os");

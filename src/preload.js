@@ -1,5 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
+let isMuted = false;
+
 contextBridge.exposeInMainWorld('api', {
 
     minimize: () => ipcRenderer.send('minimize'),
@@ -14,6 +16,8 @@ contextBridge.exposeInMainWorld('api', {
     sendHotword: (phrase) => ipcRenderer.send('hotword', phrase),
     sendInstructions: (instructions) => ipcRenderer.send('instructions', instructions),
     sendPinTop: (isOnTop) => ipcRenderer.send('pintop', isOnTop),
+
+    sendIsMuted: (_isMuted) => isMuted = _isMuted,
 
     receiveSpeechMessage: (callback) => {
         ipcRenderer.on('speech-message', (event, value, message, type) => {
@@ -123,25 +127,27 @@ ipcRenderer.on('play-audio', (event, bufferData) => {
     function monitorVolume() {
         const rms = getRMS();
 
-        if (!recording && rms > VOLUME_THRESHOLD) {
-            answer.style.display = 'block';
-            answer.textContent = 'Listening...';
-            startRecording();
-        }
-
-        if (recording) {
-            if (rms < VOLUME_THRESHOLD) {
-                if (!silenceStartTime) {
-                    silenceStartTime = performance.now();
-                } else {
-                    const silenceDuration = performance.now() - silenceStartTime;
-                    if (silenceDuration > SILENCE_TIME_REQUIRED) {
-                        stopRecording();
-                        silenceStartTime = null;
+        if (!isMuted) {
+            if (!recording && rms > VOLUME_THRESHOLD) {
+                answer.style.display = 'block';
+                answer.textContent = 'Listening...';
+                startRecording();
+            }
+    
+            if (recording) {
+                if (rms < VOLUME_THRESHOLD) {
+                    if (!silenceStartTime) {
+                        silenceStartTime = performance.now();
+                    } else {
+                        const silenceDuration = performance.now() - silenceStartTime;
+                        if (silenceDuration > SILENCE_TIME_REQUIRED) {
+                            stopRecording();
+                            silenceStartTime = null;
+                        }
                     }
+                } else {
+                    silenceStartTime = null;
                 }
-            } else {
-                silenceStartTime = null;
             }
         }
 
